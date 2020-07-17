@@ -1,0 +1,37 @@
+USE [msdb]
+GO
+
+/****** Object:  Table [dbo].[backup_history]    Script Date: 12/04/2020 18:50:12 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[backup_history](
+	[ServerName] [sql_variant] NULL,
+	[Database_Name] [sysname] NULL,
+	[Compatibility_level] [tinyint] NULL,
+	[Recovery_model] [tinyint] NULL,
+	[Recovery_model_desc] [nvarchar](60) NULL,
+	[Database_Create_Date] [datetime] NULL,
+	[Backup_Completed] [varchar](15) NULL,
+	[Backup_Start_DateTime] [datetime] NULL,
+	[Backup_Finish_DateTime] [datetime] NULL,
+	[Duration_Min] [int] NULL,
+	[Days_Since_Last_Backup] [int] NULL,
+	[Last_Differential_Finish_DateTime] [datetime] NULL,
+	[Days_Since_Last_Differential_Backup] [int] NULL,
+	[Last_Log_Finish_DateTime] [datetime] NULL,
+	[Days_Since_Last_Log_Backup] [int] NULL,
+	[LOG_Backup_Size_MB] [varchar](15) NULL,
+	[Backup_Type] [varchar](21) NULL,
+	[Backup_Size_MB] [varchar](15) NULL,
+	[Backup_Size_Compressed_MB] [varchar](15) NULL,
+	[Device_type] [tinyint] NULL,
+	[Physical_device_name] [nvarchar](360) NULL,
+	[Logical_device_name] [nvarchar](250) NULL
+) ON [PRIMARY]
+GO
+
+

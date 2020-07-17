@@ -1,0 +1,38 @@
+SELECT job.name,
+CAST(dbo.agent_datetime(run_date, run_time) AS DATE) AS fRun_Date,
+dbo.agent_datetime(run_date, run_time) AS fRun_date_time,
+STUFF(STUFF(RIGHT(REPLICATE('0', 6) + CAST(run_time AS VARCHAR(6)), 6), 3, 0, ':'), 6, 0, ':') 'run_time',
+STUFF(
+STUFF(STUFF(RIGHT(REPLICATE('0', 8) + CAST(run_duration AS VARCHAR(8)), 8), 3, 0, ':'), 6, 0, ':'),
+9,
+0,
+':'
+) 'duration',
+instance_id,
+step.command,
+history.job_id,
+history.step_id,
+sql_message_id,
+sql_severity,
+message,
+run_status,
+run_date,
+run_time,
+run_duration,
+AVG(history.run_duration) OVER (PARTITION BY history.job_id) AS average_rt,
+MAX(history.run_duration) OVER (PARTITION BY history.job_id) AS max_rt,
+MIN(history.run_duration) OVER (PARTITION BY history.job_id) AS min_rt,
+COUNT(history.job_id) OVER (PARTITION BY history.job_id, run_date) AS execution_day,
+DATEPART(HOUR, dbo.agent_datetime(run_date, run_time)) AS Hour_day,
+COUNT(history.job_id) OVER (PARTITION BY history.job_id,
+DATEPART(HOUR, dbo.agent_datetime(run_date, run_time))) AS execution_hour, history.server
+FROM sysjobhistory history
+INNER JOIN sysjobs job
+ON job.job_id = history.job_id
+LEFT OUTER JOIN [dbo].[sysjobsteps] step
+ON step.job_id = job.job_id
+AND step.step_id = job.start_step_id
+WHERE history.step_id = 0
+AND CAST(dbo.agent_datetime(run_date, run_time) AS DATE) >= GETDATE() - 200
+ORDER BY job.job_id,
+fRun_date_time DESC;
